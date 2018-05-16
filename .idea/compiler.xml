@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="comtestvaltech" />
+        <module name="ValtechTest" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="comtestvaltech" target="1.8" />
+      <module name="ValtechTest" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

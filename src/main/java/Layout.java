@@ -1,112 +1,116 @@
-import com.sun.tools.hat.internal.util.ArraySorter;
-import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
-import javafx.util.converter.IntegerStringConverter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Layout {
 
-    public Boolean isHouseSequenceValid(ArrayList<Integer> houseList) {
+    private final ArrayList<Integer> houseList;
+    private  List<Integer> leftSideHouses = new ArrayList<>();
+    private  List<Integer> rightSideHouses= new ArrayList<>();
+
+    private static final Logger LOGGER = Logger.getLogger( Layout.class.getName() );
+
+    Layout(ArrayList<Integer> houseList,List<Integer> leftSideHouses,List<Integer> rightSideHouses){
+        this.houseList = houseList;
+        this.leftSideHouses = leftSideHouses;
+        this.rightSideHouses = rightSideHouses;
+    }
+
+    public Boolean isHouseSequenceValid() throws HouseListException {
 
         if (houseList.get(0).intValue() != 1){
-            return false;
+            LOGGER.info(" The house List does not start with 1");
+            throw new HouseListException(1001,"The house List does not start with 1");
         }
-
-        List<Integer> newIntOdd =  houseList.stream().filter(n -> n % 2 != 0)
+//
+        List<Integer> leftSideHouses =  houseList.stream().filter(n -> n % 2 != 0)
                 .collect(Collectors.toList());
-        List<Integer> newIntEven =  houseList.stream().filter(n -> n % 2 == 0)
+        List<Integer> rightSideHouses =  houseList.stream().filter(n -> n % 2 == 0)
                 .collect(Collectors.toList());
 
-        newIntOdd.forEach(newInt1-> System.out.println("new Int "+newInt1.intValue()));
-
-        if (IntStream.range(0,newIntOdd.size()-1).filter(i ->
-                   ( ((Integer) newIntOdd.get(i +1 ).intValue() != (((Integer) newIntOdd.get(i)).intValue()+2))
+        if (IntStream.range(0, leftSideHouses.size()-1).filter(i ->
+                   ( ((Integer) leftSideHouses.get(i +1 ).intValue() != (((Integer) leftSideHouses.get(i)).intValue()+2))
                )).count() > 0){
-            return false;
+            LOGGER.info(" The houses on the north(left) side of the street are not in sequence");
+            throw new HouseListException(1002,"The houses on the north(left) side of the street are not in sequence");
         }
 
-
-        if(IntStream.range(0,newIntEven.size()-1).filter(i ->
-                (((Integer) newIntEven.get(i + 1).intValue() != (((Integer) newIntEven.get(i)).intValue()+2))
+        if(IntStream.range(0,rightSideHouses.size()-1).filter(i ->
+                (((Integer) rightSideHouses.get(i + 1).intValue() != (((Integer) rightSideHouses.get(i)).intValue()+2))
                 )).count() > 0){
-            return false;
+            LOGGER.info(" The houses on the right(south) side of the street are not in sequence");
+            throw new HouseListException(1003,"The houses on the right(south) side of the street are not in sequence");
         }
 
         return true;
     }
 
-    public Integer streetHouseCount(ArrayList<Integer> houseList) {
-        boolean flag = true;
-        System.out.println("HouseCount is " + houseList.size());
+    public Integer streetHouseCount() {
+        LOGGER.info(" House count is total: "+ houseList.size());
 
         return houseList.size();
     }
 
-    public Integer streetHouseCountLeftHouse(ArrayList<Integer> houseList) {
+    public Integer streetHouseCountLeftHouse() {
         Long countOddNew = IntStream.range(0,houseList.size()-1).filter(t ->  ((((Integer)t).intValue() % 2) != 0)
         ).count();
+        LOGGER.info(" House count on the left(north) of the street: "+ countOddNew.intValue());
 
         return countOddNew.intValue();
     }
 
-    public Integer streetHouseCountRightHouse(ArrayList<Integer> houseList) {
+    public Integer streetHouseCountRightHouse() {
         Long countEvenNew = IntStream.range(0,houseList.size()-1).filter(t ->  ((((Integer)t).intValue() % 2) == 0)
         ).count();
+        LOGGER.info(" House count on the right(south) of the street: "+ countEvenNew.intValue());
 
         return countEvenNew.intValue();
     }
 
-    public List<Integer> houseOrderOfDeliveryListApproach1(ArrayList<Integer> houseList) {
+    public List<Integer> houseOrderOfDeliveryListApproach1() {
 
-        LinkedList<Integer> finalHouseDeliveryOrder = new LinkedList<Integer>();
+        List<Integer> finalHouseDeliveryOrder = new ArrayList<>();
 
-        List<Integer> countOddNew = houseList.stream().filter(n -> n % 2 != 0)
+        List<Integer> houseOddNumber = houseList.stream().filter(n -> n % 2 != 0)
                 .collect(Collectors.toList());
-        List<Integer> countEvenNew = houseList.stream().filter(n -> n % 2 == 0)
+        List<Integer> houseEvenNumber = houseList.stream().filter(n -> n % 2 == 0)
                 .collect(Collectors.toList());
 
-        Collections.reverse(countEvenNew);
+        Collections.reverse(houseEvenNumber);
 
-        finalHouseDeliveryOrder.addAll(countOddNew);
-        finalHouseDeliveryOrder.addAll(countEvenNew);
+        finalHouseDeliveryOrder.addAll(houseOddNumber);
+        finalHouseDeliveryOrder.addAll(houseEvenNumber);
 
         return finalHouseDeliveryOrder;
     }
 
-    public List<Integer> houseOrderOfDeliveryListApproach2(ArrayList<Integer> houseList) {
+    public List<Integer> houseOrderOfDeliveryListApproach2() {
 
-        LinkedList<Integer> finalHouseDeliveryOrder = new LinkedList<Integer>();
+        List<Integer> finalHouseDeliveryOrder = new ArrayList<Integer>();
 
-        List<Integer> countOddNew = houseList.stream().filter(n -> n % 2 != 0)
+        List<Integer> houseOddNumber = houseList.stream().filter(n -> n % 2 != 0)
                 .collect(Collectors.toList());
-        List<Integer> countEvenNew = houseList.stream().filter(n -> n % 2 == 0)
+        List<Integer> houseEvenNumber = houseList.stream().filter(n -> n % 2 == 0)
                 .collect(Collectors.toList());
-
 
         for(int i = 0 ; i < houseList.size()  ; i++){
-            if(i <= (countOddNew.size() -1) &&  countOddNew.get(i) != null)
-            finalHouseDeliveryOrder.add(countOddNew.get(i));
+            if(i <= (houseOddNumber.size() -1) &&  houseOddNumber.get(i) != null)
+            finalHouseDeliveryOrder.add(houseOddNumber.get(i));
 
-            if(i <= (countEvenNew.size() -1) && countEvenNew.get(i) != null ) {
-                finalHouseDeliveryOrder.add(countEvenNew.get(i));
+            if(i <= (houseEvenNumber.size() -1) && houseEvenNumber.get(i) != null ) {
+                finalHouseDeliveryOrder.add(houseEvenNumber.get(i));
             }
-
         }
 
         return finalHouseDeliveryOrder;
     }
 
-    public  Integer numberOfroadcrossingsRequiredApproach1(ArrayList<Integer> houseList) {
+    public  Integer numberOfroadcrossingsRequiredApproach1() {
 
-        LinkedList<Integer> leftSideHouseCount = new LinkedList<Integer>();
-        LinkedList<Integer> rightSideHouseCount = new LinkedList<Integer>();
+        List<Integer> leftSideHouseCount = new ArrayList<>();
+        List<Integer> rightSideHouseCount = new ArrayList<>();
         Integer numberOfCrossings = 0 ;
 
         for (int i = 0; i <= houseList.size() - 1; i++) {
@@ -125,10 +129,13 @@ public class Layout {
             numberOfCrossings = (leftSideHouseCount.size() *2) -1;
         }
 
+        LOGGER.info(" Number of crossings  Approach1 : "+numberOfCrossings.intValue());
+
         return numberOfCrossings;
     }
 
     public  Integer numberOfroadcrossingsRequiredApproach2(Integer numberOfStreets) {
-        return numberOfStreets;
+        LOGGER.info(" Number of crossings  Approach2 : "+numberOfStreets.intValue());
+        return numberOfStreets.intValue();
     }
 }
