@@ -125,7 +125,12 @@ public class LayoutTest {
 
     @Test
     public void testHouseOrderOfDeliveryApproach2(){
-        Layout layout = new Layout(initArrayValid,leftSideHousesValid,leftSideHousesValid);
+        List<Integer> leftSideHousesValid =  initArrayValid.stream().filter(n -> n % 2 != 0)
+                .collect(Collectors.toList());
+        List<Integer> rightSideHousesValid =  initArrayValid.stream().filter(n -> n % 2 == 0)
+                .collect(Collectors.toList());
+
+        Layout layout = new Layout(initArrayValid,leftSideHousesValid,rightSideHousesValid);
         List<Integer> houseOrderOfDelivery = layout.houseOrderOfDeliveryListApproach2();
         Assert.assertEquals(houseOrderOfDelivery.get(houseOrderOfDelivery.size()-1).intValue(),14);
     }

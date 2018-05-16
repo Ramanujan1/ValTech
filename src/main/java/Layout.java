@@ -80,17 +80,17 @@ public class Layout {
 
         List<Integer> finalHouseDeliveryOrder = new ArrayList<Integer>();
 
-        List<Integer> houseOddNumber = houseList.stream().filter(n -> n % 2 != 0)
-                .collect(Collectors.toList());
-        List<Integer> houseEvenNumber = houseList.stream().filter(n -> n % 2 == 0)
-                .collect(Collectors.toList());
+//        List<Integer> houseOddNumber = houseList.stream().filter(n -> n % 2 != 0)
+//                .collect(Collectors.toList());
+//        List<Integer> houseEvenNumber = houseList.stream().filter(n -> n % 2 == 0)
+//                .collect(Collectors.toList());
 
         for(int i = 0 ; i < houseList.size()  ; i++){
-            if(i <= (houseOddNumber.size() -1) &&  houseOddNumber.get(i) != null)
-            finalHouseDeliveryOrder.add(houseOddNumber.get(i));
+            if(i <= (leftSideHouses.size() -1) &&  leftSideHouses.get(i) != null)
+            finalHouseDeliveryOrder.add(leftSideHouses.get(i));
 
-            if(i <= (houseEvenNumber.size() -1) && houseEvenNumber.get(i) != null ) {
-                finalHouseDeliveryOrder.add(houseEvenNumber.get(i));
+            if(i <= (rightSideHouses.size() -1) && rightSideHouses.get(i) != null ) {
+                finalHouseDeliveryOrder.add(rightSideHouses.get(i));
             }
         }
 
