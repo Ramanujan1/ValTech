@@ -24,14 +24,9 @@ public class Layout {
             LOGGER.info(" The house List does not start with 1");
             throw new HouseListException(1001,"The house List does not start with 1");
         }
-//
-        List<Integer> leftSideHouses =  houseList.stream().filter(n -> n % 2 != 0)
-                .collect(Collectors.toList());
-        List<Integer> rightSideHouses =  houseList.stream().filter(n -> n % 2 == 0)
-                .collect(Collectors.toList());
 
         if (IntStream.range(0, leftSideHouses.size()-1).filter(i ->
-                   ( ((Integer) leftSideHouses.get(i +1 ).intValue() != (((Integer) leftSideHouses.get(i)).intValue()+2))
+                   ( ((Integer) leftSideHouses.get(i + 1).intValue() != (((Integer) leftSideHouses.get(i)).intValue()+2))
                )).count() > 0){
             LOGGER.info(" The houses on the north(left) side of the street are not in sequence");
             throw new HouseListException(1002,"The houses on the north(left) side of the street are not in sequence");
@@ -54,7 +49,7 @@ public class Layout {
     }
 
     public Integer streetHouseCountLeftHouse() {
-        Long countOddNew = IntStream.range(0,houseList.size()-1).filter(t ->  ((((Integer)t).intValue() % 2) != 0)
+        Long countOddNew = IntStream.range(0,houseList.size()).filter(t ->  ((((Integer)t).intValue() % 2) != 0)
         ).count();
         LOGGER.info(" House count on the left(north) of the street: "+ countOddNew.intValue());
 
@@ -73,15 +68,10 @@ public class Layout {
 
         List<Integer> finalHouseDeliveryOrder = new ArrayList<>();
 
-        List<Integer> houseOddNumber = houseList.stream().filter(n -> n % 2 != 0)
-                .collect(Collectors.toList());
-        List<Integer> houseEvenNumber = houseList.stream().filter(n -> n % 2 == 0)
-                .collect(Collectors.toList());
+        Collections.reverse(rightSideHouses);
 
-        Collections.reverse(houseEvenNumber);
-
-        finalHouseDeliveryOrder.addAll(houseOddNumber);
-        finalHouseDeliveryOrder.addAll(houseEvenNumber);
+        finalHouseDeliveryOrder.addAll(leftSideHouses);
+        finalHouseDeliveryOrder.addAll(rightSideHouses);
 
         return finalHouseDeliveryOrder;
     }

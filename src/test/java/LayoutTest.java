@@ -20,8 +20,6 @@ public class LayoutTest {
     static ArrayList<Integer> initArrayInValidStartValue = new ArrayList<>();
     static ArrayList<Integer> initArrayInValidSequence = new ArrayList<>();
 
-
-
     List<Integer> leftSideHousesValid =  null;
     List<Integer> rightSideHousesValid =  null;
 
@@ -30,7 +28,6 @@ public class LayoutTest {
 
     @BeforeClass
     public static void setUpClass() throws FileNotFoundException {
-
 
         File file = new File(LayoutTest.class.getClassLoader().getResource("streetValid.txt").getFile());
         Scanner scanner = new Scanner(file);
@@ -45,7 +42,6 @@ public class LayoutTest {
             initArrayInValidStartValue.add((scanner.nextInt()));
         }
 
-
         File fileInvalidSequence = new File(LayoutTest.class.getClassLoader().getResource("streetInvalidSequence.txt").getFile());
         scanner = new Scanner(fileInvalidSequence);
         while(scanner.hasNextInt()){
@@ -55,16 +51,17 @@ public class LayoutTest {
 
     @Test
     public void testFileValidity() throws HouseListException {
+        List<Integer> leftSideHousesValid =  initArrayValid.stream().filter(n -> n % 2 != 0)
+                .collect(Collectors.toList());
+        List<Integer> rightSideHousesValid =  initArrayValid.stream().filter(n -> n % 2 == 0)
+                .collect(Collectors.toList());
 
-
-        Layout layout = new Layout(initArrayValid,leftSideHousesValid,leftSideHousesValid);
+        Layout layout = new Layout(initArrayValid,leftSideHousesValid,rightSideHousesValid);
         Assert.assertTrue(layout.isHouseSequenceValid());
     }
 
     @Test
     public void testFileInValidityStart() throws HouseListException {
-
-
 
         List<Integer> leftSideHouses =  initArrayInValidStartValue.stream().filter(n -> n % 2 != 0)
                 .collect(Collectors.toList());
@@ -116,7 +113,12 @@ public class LayoutTest {
 
     @Test
     public void testHouseOrderOfDeliveryApproach1(){
-        Layout layout = new Layout(initArrayValid,leftSideHousesValid,leftSideHousesValid);
+        List<Integer> leftSideHousesValid =  initArrayValid.stream().filter(n -> n % 2 != 0)
+                .collect(Collectors.toList());
+        List<Integer> rightSideHousesValid =  initArrayValid.stream().filter(n -> n % 2 == 0)
+                .collect(Collectors.toList());
+
+        Layout layout = new Layout(initArrayValid,leftSideHousesValid,rightSideHousesValid);
         List<Integer> houseOrderOfDelivery = layout.houseOrderOfDeliveryListApproach1();
         Assert.assertEquals(houseOrderOfDelivery.get(houseOrderOfDelivery.size()-1).intValue(),2);
     }
